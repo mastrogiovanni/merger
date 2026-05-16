@@ -11,7 +11,7 @@ from docx import Document
 from docxcompose.composer import Composer
 
 
-def merge_docx(inputs: list[Path], output: Path) -> None:
+def validate_docx_inputs(inputs: list[Path]) -> None:
     if len(inputs) < 2:
         raise ValueError("Provide at least two .docx files to merge")
 
@@ -20,6 +20,10 @@ def merge_docx(inputs: list[Path], output: Path) -> None:
             raise FileNotFoundError(path)
         if path.suffix.lower() != ".docx":
             raise ValueError(f"Not a .docx file: {path}")
+
+
+def merge_docx(inputs: list[Path], output: Path) -> None:
+    validate_docx_inputs(inputs)
 
     composer = Composer(Document(str(inputs[0])))
     for path in inputs[1:]:
