@@ -10,6 +10,7 @@ Command-line utilities to join multiple Word documents (`.docx`) into one file. 
 ## Requirements
 
 - Python 3.9+
+- Node.js 18+ and npm (for the web UI only)
 - [docxcompose](https://pypi.org/project/docxcompose/) (installs `python-docx` and `lxml` automatically)
 
 ## Setup
@@ -19,6 +20,63 @@ python3 -m venv .venv
 source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
+
+## Web app (frontend)
+
+The React UI in `frontend/` lets you upload `.docx` files, reorder them, choose **Merge** or **Combine**, and download the result.
+
+### Quick start (recommended)
+
+From the project root:
+
+```bash
+chmod +x run.sh   # once, if needed
+./run.sh
+```
+
+Then open **http://127.0.0.1:5173** in your browser. The script creates the venv if missing, installs Python and npm dependencies, and starts both the API (`:8000`) and the dev UI (`:5173`).
+
+Press `Ctrl+C` to stop.
+
+**Single-server mode** (builds the UI, serves API + static files on one port):
+
+```bash
+./run.sh --prod
+```
+
+Open **http://127.0.0.1:8000**.
+
+### Manual start (development)
+
+Use two terminals if you prefer to run services separately.
+
+**Terminal 1 — API:**
+
+```bash
+source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn app:app --reload --host 127.0.0.1 --port 8000
+```
+
+**Terminal 2 — frontend:**
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Open **http://127.0.0.1:5173**. Vite proxies `/api` requests to the backend on port 8000.
+
+### Manual start (production-style)
+
+```bash
+cd frontend && npm install && npm run build && cd ..
+source .venv/bin/activate
+uvicorn app:app --host 127.0.0.1 --port 8000
+```
+
+Open **http://127.0.0.1:8000**.
 
 ## Which script to use
 
