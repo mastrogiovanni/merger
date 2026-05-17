@@ -8,6 +8,7 @@
 set -euo pipefail
 
 PORT=80
+FRONTEND_PORT=5173
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT"
@@ -49,22 +50,22 @@ if $PROD; then
   echo "Building frontend…"
   npm run build --prefix frontend
   echo ""
-  echo "Nando is running at http://127.0.0.1:${PORT}"
+  echo "Nando is running at http://0.0.0.0:${PORT}"
   echo "Press Ctrl+C to stop."
-  exec uvicorn app:app --host 127.0.0.1 --port ${PORT}
+  exec uvicorn app:app --host 0.0.0.0 --port ${PORT}
 else
-  echo "Starting API on http://127.0.0.1:${PORT} …"
-  uvicorn app:app --reload --host 127.0.0.1 --port ${PORT}
+  echo "Starting API on http://0.0.0.0:${PORT} …"
+  uvicorn app:app --reload --host 0.0.0.0 --port ${PORT}
   UVICORN_PID=$!
 
-  echo "Starting frontend on http://127.0.0.1:5173 …"
+  echo "Starting frontend on http://0.0.0.0:5173 …"
   npm run dev --prefix frontend &
   VITE_PID=$!
 
   echo ""
   echo "Nando is ready:"
-  echo "  Open http://127.0.0.1:5173 in your browser"
-  echo "  API: http://127.0.0.1:${PORT}"
+  echo "  Open http://0.0.0.0:${FRONTEND_PORT} in your browser"
+  echo "  API: http://0.0.0.0:${PORT}"
   echo ""
   echo "Press Ctrl+C to stop both servers."
 
